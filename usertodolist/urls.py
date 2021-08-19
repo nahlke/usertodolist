@@ -10,5 +10,5 @@ urlpatterns = [
     path('usersignin', views.user_signin, name='usersignin'),
     path('hometodo', views.hometodo, name='hometodo'),
     path('todolist', views.todolist, name='todolist'),
-    
+    path('completetodo', views.complete_todo, name='completetodo'),
 ]

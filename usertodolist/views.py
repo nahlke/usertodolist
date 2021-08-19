@@ -19,11 +19,17 @@ def user_create(request):
     post_passwordrepeat = request.POST.get("passwordrepeat")
     new_user = models.RegistrationModel(email=post_email, username=post_username, password=post_password,
                                         passwordrepeat=post_passwordrepeat)
-    if new_user.password == new_user.passwordrepeat:
-        new_user.save()
-        return HttpResponse("Registrierung erfolgreich")
+    if models.RegistrationModel.objects.filter(email=new_user.email):
+        return HttpResponse("Diese Email ist schon vorhanden")
     else:
-        return HttpResponse("Das Passwort stimmt nicht überein")
+        if models.RegistrationModel.objects.filter(username=new_user.username):
+            return HttpResponse("Dieser Username ist schon vergeben")
+        else:
+            if new_user.password == new_user.passwordrepeat:
+                new_user.save()
+                return HttpResponse("Registrierung erfolgreich")
+            else:
+                return HttpResponse("Das Passwort stimmt nicht überein")
 
 def signin(request):
     context = {'id': '1'}
@@ -35,7 +41,6 @@ def user_signin(request):
     # post_password = request.POST.get("password")
     # new_user = models.SigninModel(username=post_username, password=post_password)
     # if new_user.password:
-    #    new_user.save()
     return render(request, "todolist/hometodo.html")
     # else:
     #    return HttpResponse("Der Username oder das Passwort ist falsch!")
@@ -46,4 +51,9 @@ def hometodo(request):
     return render(request, "todolist/hometodo.html")
 
 def todolist(request):
-    return render(request, "todolist/todo.html")
+    context = {'id': '1'}
+    context["todolist_form"] = forms.ToDoForm()
+    return render(request, "todolist/todo.html", context)
+
+def complete_todo(request):
+    return HttpResponse("Gespeichert")

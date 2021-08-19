@@ -12,5 +12,9 @@
 
 
 {% block content %}
-
+<form action="completetodo" method="post">
+    {% csrf_token %}
+    {{ todolist_form.as_p }}
+    <button type="submit" class="btn btn-danger">Liste ergänzen</button>
+</form>
 {% endblock %}
