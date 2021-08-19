@@ -37,13 +37,12 @@ def signin(request):
     return render(request, "usersignin/signin.html", context)
 
 def user_signin(request):
-    # post_username = request.POST.get("username")
-    # post_password = request.POST.get("password")
-    # new_user = models.SigninModel(username=post_username, password=post_password)
-    # if new_user.password:
-    return render(request, "todolist/hometodo.html")
-    # else:
-    #    return HttpResponse("Der Username oder das Passwort ist falsch!")
+    post_username = request.POST.get("username")
+    post_password = request.POST.get("password")
+    if models.RegistrationModel.objects.filter(username=post_username, password=post_password):
+        return render(request, "todolist/hometodo.html")
+    else:
+        return HttpResponse("Der Username oder das Passwort ist falsch!")
 
 
 

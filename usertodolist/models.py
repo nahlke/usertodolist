@@ -6,10 +6,6 @@ class RegistrationModel(models.Model):
     password = models.CharField(max_length=18)
     passwordrepeat = models.CharField(max_length=18)
 
-class SigninModel(models.Model):
-    username = models.CharField(max_length=20)
-    password = models.CharField(max_length=18)
-
 class ToDoListModel(models.Model):
     title = models.CharField(max_length=32)
     description = models.CharField(max_length=256)
