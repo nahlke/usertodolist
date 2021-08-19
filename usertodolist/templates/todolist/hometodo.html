@@ -1,15 +1,19 @@
 {% extends "index.html" %}
 
+{% block home %}
+<a class="navbar-brand" href="{% url "hometodo"%}">Home</a>
+{% endblock %}
 {% block link1 %}
-<a class="navbar-brand active" href="{% url "hometodo"%}">Home</a>
+<a class="nav-link active" aria-current="page" href="{% url "hometodo"%}">Home</a>
 {% endblock %}
 {% block link2 %}
-<a class="nav-link active" href="{% url "todolist"%}" tabindex="-1">To-Do-Listen</a>
+<a class="nav-link" href="{% url "todolist"%}">To-Do-Liste</a>
 {% endblock %}
 {% block link3 %}
-<a class="nav-link active" href="{% url "homeregin"%}" tabindex="-1">Abmelden</a>
+<a class="nav-link" href="{% url "homeregin"%}">Abmelden</a>
 {% endblock %}
 
 {% block content %}
 
 {% endblock %}
+
