@@ -17,14 +17,12 @@
 {% block content %}
 <ul>
     {% for todo in todos %}
-        <div class="card p-3 m-3">
-          <div class="card-header">
-            {{ todo.title }}
-          </div>
+        <div class="card w-75">
           <div class="card-body">
-            <blockquote class="blockquote mb-0">
-              <p><span title="{{ todo.title }}">{{ todo.description }}</span></p>
-            </blockquote>
+            <h5 class="card-title">{{ todo.title }}</h5>
+            <p class="card-text">{{ todo.description }}</p>
+            <a href="{% url "complet"%}" class="btn btn-primary">Erledigt</a>
+            <a href="{% url "delete"%}" class="btn btn-danger">Löschen</a>
           </div>
         </div>
     {% endfor %}
@@ -33,6 +31,6 @@
 <form action="completetodo" method="post">
     {% csrf_token %}
     {{ todolist_form.as_p }}
-    <button type="submit" class="btn btn-danger">Liste ergänzen</button>
+    <button type="submit" class="btn btn-primary">Liste ergänzen</button>
 </form>
 {% endblock %}

@@ -11,4 +11,6 @@ urlpatterns = [
     path('hometodo', views.hometodo, name='hometodo'),
     path('todolist', views.todolist, name='todolist'),
     path('completetodo', views.complete_todo, name='completetodo'),
+    path('complet', views.complet, name='complet'),
+    path('delete', views.delete, name='delete'),
 ]

@@ -60,4 +60,10 @@ def complete_todo(request):
     post_description = request.POST.get("description")
     new_todo = models.ToDoListModel(title=post_title, description=post_description)
     new_todo.save()
-    return HttpResponse("Gespeichert")
+    return todolist(request)
+
+def complet(request):
+    return todolist(request)
+
+def delete(request):
+    return todolist(request)
