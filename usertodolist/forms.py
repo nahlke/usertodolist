@@ -15,4 +15,4 @@ class SigninForm(forms.Form):
 class ToDoForm(ModelForm):
     class Meta:
         model = ToDoListModel
-        fields = ["title", "description", "status"]
+        fields = ["title", "description"]

@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block home %}
-<a class="navbar-brand" href="{% url "hometodo"%}">Home</a>
+<a class="navbar-brand">To-Do-Liste</a>
 {% endblock %}
 {% block link1 %}
 <a class="nav-link active" aria-current="page" href="{% url "hometodo"%}">Home</a>
@@ -15,6 +15,21 @@
 
 
 {% block content %}
+<ul>
+    {% for todo in todos %}
+        <div class="card p-3 m-3">
+          <div class="card-header">
+            {{ todo.title }}
+          </div>
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p><span title="{{ todo.title }}">{{ todo.description }}</span></p>
+            </blockquote>
+          </div>
+        </div>
+    {% endfor %}
+</ul>
+
 <form action="completetodo" method="post">
     {% csrf_token %}
     {{ todolist_form.as_p }}

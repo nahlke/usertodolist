@@ -50,9 +50,14 @@ def hometodo(request):
     return render(request, "todolist/hometodo.html")
 
 def todolist(request):
-    context = {'id': '1'}
+    todos = models.ToDoListModel.objects.all()
+    context = {'todos': todos}
     context["todolist_form"] = forms.ToDoForm()
     return render(request, "todolist/todo.html", context)
 
 def complete_todo(request):
+    post_title = request.POST.get("title")
+    post_description = request.POST.get("description")
+    new_todo = models.ToDoListModel(title=post_title, description=post_description)
+    new_todo.save()
     return HttpResponse("Gespeichert")

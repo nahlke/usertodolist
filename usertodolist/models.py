@@ -9,5 +9,4 @@ class RegistrationModel(models.Model):
 class ToDoListModel(models.Model):
     title = models.CharField(max_length=32)
     description = models.CharField(max_length=256)
-    status = models.BooleanField()
 
