@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+
+{% block home %}
+<a class="navbar-brand">To-Do-Liste</a>
+{% endblock %}
+{% block link1 %}
+<a class="nav-link active" aria-current="page" href="{% url "hometodo"%}">Home</a>
+{% endblock %}
+{% block link2 %}
+<a class="nav-link" href="{% url "todolist"%}">To-Do-Liste</a>
+{% endblock %}
+{% block link3 %}
+<a class="nav-link" href="{% url "signout"%}">Abmelden</a>
+{% endblock %}
+
+
+{% block content %}
+<ul>
+    {% for todo in todos %}
+        {% if todo.status != True %}
+            <div class="card w-75">
+              <div class="card-body">
+                <h5 class="card-title">{{ todo.title }}</h5>
+                <p class="card-text">{{ todo.description }}</p>
+              </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+<form action="completesave" method="post">
+    {% csrf_token %}
+    {{ complete_form.as_p }}
+    <button type="submit" class="btn btn-primary">Erledigen</button>
+</form>
+{% endblock %}

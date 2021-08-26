@@ -10,10 +10,16 @@
 <a class="nav-link" href="{% url "todolist"%}">To-Do-Liste</a>
 {% endblock %}
 {% block link3 %}
-<a class="nav-link" href="{% url "homeregin"%}">Abmelden</a>
+<a class="nav-link" href="{% url "signout"%}">Abmelden</a>
 {% endblock %}
 
 {% block content %}
-
+<div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+  <div class="card-header">Herzlich Willkommen</div>
+  <div class="card-body">
+    <h5 class="card-title">Sie sind angemeldet!</h5>
+    <p class="card-text">Sie können nun loslegen und Ihre eigene To-Do-Liste erstellen.</p>
+  </div>
+</div>
 {% endblock %}
 

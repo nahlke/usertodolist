@@ -17,6 +17,6 @@
 <form action="user_create" method="post">
     {% csrf_token %}
     {{ registration_form.as_p }}
-    <button type="submit" class="btn btn-danger">Registrieren</button>
+    <button type="submit" class="btn btn-primary">Registrieren</button>
 </form>
 {% endblock %}

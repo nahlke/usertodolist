@@ -17,6 +17,6 @@
 <form action="usersignin" method="post">
     {% csrf_token %}
     {{ signin_form.as_p }}
-    <button type="submit" class="btn btn-danger">Anmelden</button>
+    <button type="submit" class="btn btn-primary">Anmelden</button>
 </form>
 {% endblock %}

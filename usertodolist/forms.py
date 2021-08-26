@@ -1,20 +1,52 @@
 from django import forms
 from django.forms import ModelForm
-from usertodolist.models import RegistrationModel, ToDoListModel
+from usertodolist.models import RegistrationModel, ToDoListModel, SignInModel
 
 
+#form die für die Registrierung benötigt wird
 class RegistrationForm(ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    passwordrepeat = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(label='Passwort', widget=forms.PasswordInput)
+    passwordrepeat = forms.CharField(label='Passwort wiederholen', widget=forms.PasswordInput)
+    username = forms.CharField(label='Benutzername')
     class Meta:
         model = RegistrationModel
         fields = ["email", "username", "password", "passwordrepeat"]
 
-class SigninForm(forms.Form):
-    username = forms.CharField(label='username', max_length=30)
-    password = forms.CharField(label='password', max_length=30, widget=forms.PasswordInput)
+#form die für die Anmeldung benötigt wird
+class SignInForm(ModelForm):
+    username = forms.CharField(label='Benutzername')
+    password = forms.CharField(label='Passwort', widget=forms.PasswordInput)
+    class Meta:
+        model = SignInModel
+        fields = ["username", "password"]
 
+#form die für die todo liste benötigt wird
 class ToDoForm(ModelForm):
+    title = forms.CharField(label='Titel')
+    description = forms.CharField(label='Beschreibung')
+    username = forms.CharField(label='Benutzername')
     class Meta:
         model = ToDoListModel
-        fields = ["title", "description"]
+        fields = ["title", "description", "username"]
+
+#form die für das bearbeiten der todo liste benötigt wird
+class EditForm(ModelForm):
+    newtitle = forms.CharField(label='Neuer Titel')
+    title = forms.CharField(label='Titel')
+    description = forms.CharField(label='Neue Beschreibung')
+    username = forms.CharField(label='Dein Benutzername')
+    class Meta:
+        model = ToDoListModel
+        fields = ["title", "description", "username"]
+
+class DeleteForm(ModelForm):
+    title = forms.CharField(label='Titel')
+    class Meta:
+        model = ToDoListModel
+        fields = ["title"]
+
+class CompleteForm(ModelForm):
+    title = forms.CharField(label='Titel')
+    class Meta:
+        model = ToDoListModel
+        fields = ["title"]
