@@ -70,7 +70,8 @@ def hometodo(request):
 
 # anzeigen der Todo liste mit den eingetragenen sachen und den eingabefeldern
 def todolist(request):
-    todos = models.ToDoListModel.objects.filter(username="Nils")
+    user = models.SignInModel.objects.get()
+    todos = models.ToDoListModel.objects.filter(username=user.username).order_by('status', 'title')
     context = {'todos': todos}
     context["todolist_form"] = forms.ToDoForm()
     return render(request, "todolist/todo.html", context)
@@ -93,12 +94,14 @@ def complete_todo(request):
 
 # löschen der liste
 def deletelist(request):
-    models.ToDoListModel.objects.filter(username="Nils").delete()
+    user = models.SignInModel.objects.get()
+    models.ToDoListModel.objects.filter(username=user.username).delete()
     return todolist(request)
 
 # anzeigen der Todo liste mit den feldern zum verändern
 def edit(request):
-    todos = models.ToDoListModel.objects.filter(username="Nils")
+    user = models.SignInModel.objects.get()
+    todos = models.ToDoListModel.objects.filter(username=user.username)
     context = {'todos': todos}
     context["edit_form"] = forms.EditForm()
     return render(request, "todolist/edit.html", context)
@@ -122,32 +125,39 @@ def edit_save(request):
     else:
         return HttpResponse("Diesen Titel gibt es nicht!")
 
-
+# anzeigen der Todo liste und dem eingabefeld zum auswählen welches gelöscht werden soll
 def deletetodo(request):
-    todos = models.ToDoListModel.objects.filter(username="Nils")
+    user = models.SignInModel.objects.get()
+    todos = models.ToDoListModel.objects.filter(username=user.username)
     context = {'todos': todos}
-    context["delete_form"] = forms.DeleteForm()
+    context["delete_form"] = forms.DelCompForm()
     return render(request, "todolist/delete.html", context)
 
+# löschen des Todos aus der datenbank
 def delete_save(request):
     post_title = request.POST.get("title")
-    if models.ToDoListModel.objects.filter(title=post_title, username="Nils"):
-        models.ToDoListModel.objects.filter(title=post_title).delete()
+    user = models.SignInModel.objects.get()
+    if models.ToDoListModel.objects.filter(title=post_title, username=user.username):
+        models.ToDoListModel.objects.filter(title=post_title, username=user.username).delete()
         return todolist(request)
     else:
         return HttpResponse("Diesen Titel gibt es nicht!")
 
+# anzeigen der Todo liste mit den Todos die noch nicht erledigt sind und dem auswahlfeld
 def complete(request):
-    todos = models.ToDoListModel.objects.filter(username="Nils")
+    user = models.SignInModel.objects.get()
+    todos = models.ToDoListModel.objects.filter(username=user.username)
     context = {'todos': todos}
-    context["complete_form"] = forms.CompleteForm()
+    context["complete_form"] = forms.DelCompForm()
     return render(request, "todolist/complete.html", context)
 
+# todo auf erledigt setzen und abspeichern
 def complete_save(request):
     post_title = request.POST.get("title")
-    new_complete = models.ToDoListModel.objects.get(title=post_title, username="Nils")
-    if models.ToDoListModel.objects.filter(title=post_title, username="Nils"):
-        if models.ToDoListModel.objects.filter(title=post_title, status=True, username="Nils"):
+    user = models.SignInModel.objects.get()
+    new_complete = models.ToDoListModel.objects.get(title=post_title, username=user.username)
+    if models.ToDoListModel.objects.filter(title=post_title, username=user.username):
+        if models.ToDoListModel.objects.filter(title=post_title, status=True, username=user.username):
             return HttpResponse("Dieses ToDo ist schon erledigt!")
         else:
             new_complete.status = True

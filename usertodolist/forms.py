@@ -39,14 +39,10 @@ class EditForm(ModelForm):
         model = ToDoListModel
         fields = ["title", "description", "username"]
 
-class DeleteForm(ModelForm):
+#form die zum löschen und erledigen benötigt wird
+class DelCompForm(ModelForm):
     title = forms.CharField(label='Titel')
     class Meta:
         model = ToDoListModel
         fields = ["title"]
 
-class CompleteForm(ModelForm):
-    title = forms.CharField(label='Titel')
-    class Meta:
-        model = ToDoListModel
-        fields = ["title"]
