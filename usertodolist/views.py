@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from usertodolist import forms
 from usertodolist import models
+from django.contrib import messages
+from django.urls import reverse
 
 
 # Anzeigen der Seite wenn keine url eingegeben(Homeseite)
@@ -25,17 +27,20 @@ def user_create(request):
     new_user = models.RegistrationModel(email=post_email, username=post_username, password=post_password,
                                         passwordrepeat=post_passwordrepeat)
     if models.RegistrationModel.objects.filter(email=new_user.email):
-        return HttpResponse("Diese Email ist schon vorhanden")
+        messages.warning(request, "Diese Email ist schon vorhanden")
+        return user_registration(request)
     else:
         if models.RegistrationModel.objects.filter(username=new_user.username):
-            return HttpResponse("Dieser Username ist schon vergeben")
+            messages.warning(request, "Dieser Username ist schon vergeben")
+            return user_registration(request)
         else:
             if new_user.password == new_user.passwordrepeat:
                 new_user.save()
-                return HttpResponse("Registrierung erfolgreich")
+                messages.success(request, "Registrierung erfolgreich")
+                return signin(request)
             else:
-                return HttpResponse("Das Passwort stimmt nicht überein")
-
+                messages.warning(request, "Das Passwort stimmt nicht überein!")
+                return user_registration(request)
 
 # anzeigen der Anmeldeseite mit eingabefeldern
 def signin(request):
@@ -46,17 +51,22 @@ def signin(request):
 
 # anmelden des users, wird geguckt ob user existiert und password übereinstimmt sonst fehlermeldung
 def user_signin(request):
+    models.SignInModel.objects.all().delete()
     post_username = request.POST.get("username")
     post_password = request.POST.get("password")
     new_user = models.SignInModel(username=post_username, password=post_password)
     if models.RegistrationModel.objects.filter(username=post_username, password=post_password):
         new_user.save()
+        messages.success(request, "Angemeldet")
         return render(request, "todolist/hometodo.html")
     else:
-        return HttpResponse("Der Benutzername oder das Passwort ist falsch!")
+        messages.warning(request, "Der Benutzername oder das Passwort ist falsch!")
+        return signin(request)
 
+# abmeldung des users
 def signout(request):
     models.SignInModel.objects.all().delete()
+    messages.success(request, "Abgemeldet")
     return homeregin(request)
 
 
@@ -85,17 +95,21 @@ def complete_todo(request):
     new_todo = models.ToDoListModel(title=post_title, description=post_description, username=post_username)
     if models.SignInModel.objects.filter(username=post_username):
         if models.ToDoListModel.objects.filter(title=post_title, username=post_username):
-            return HttpResponse("Dieser Titel ist schon vergeben.")
+            messages.warning(request, "Dieser Titel ist schon vergeben!")
+            return todolist(request)
         else:
             new_todo.save()
+            messages.success(request, "Gespeichert")
             return todolist(request)
     else:
-        return HttpResponse("Der Benutzername ist falsch!")
+        messages.warning(request, "Der Benutzername ist falsch!")
+        return todolist(request)
 
 # löschen der liste
 def deletelist(request):
     user = models.SignInModel.objects.get()
     models.ToDoListModel.objects.filter(username=user.username).delete()
+    messages.info(request, "Die Liste wurde gelöscht!")
     return todolist(request)
 
 # anzeigen der Todo liste mit den feldern zum verändern
@@ -119,11 +133,14 @@ def edit_save(request):
             new_todo.description = post_description
             new_todo.username = post_username
             new_todo.save()
+            messages.success(request, "Erfolgreich geändert")
             return todolist(request)
         else:
-            return HttpResponse("Der Benutzername ist falsch!")
+            messages.warning(request, "Der Benutzername ist falsch!")
+            return edit(request)
     else:
-        return HttpResponse("Diesen Titel gibt es nicht!")
+        messages.warning(request, "Diesen Titel gibt es nicht!")
+        return edit(request)
 
 # anzeigen der Todo liste und dem eingabefeld zum auswählen welches gelöscht werden soll
 def deletetodo(request):
@@ -139,9 +156,11 @@ def delete_save(request):
     user = models.SignInModel.objects.get()
     if models.ToDoListModel.objects.filter(title=post_title, username=user.username):
         models.ToDoListModel.objects.filter(title=post_title, username=user.username).delete()
+        messages.success(request, "ToDo gelöscht")
         return todolist(request)
     else:
-        return HttpResponse("Diesen Titel gibt es nicht!")
+        messages.warning(request, "Diesen Titel gibt es nicht!")
+        return deletetodo(request)
 
 # anzeigen der Todo liste mit den Todos die noch nicht erledigt sind und dem auswahlfeld
 def complete(request):
@@ -158,11 +177,14 @@ def complete_save(request):
     new_complete = models.ToDoListModel.objects.get(title=post_title, username=user.username)
     if models.ToDoListModel.objects.filter(title=post_title, username=user.username):
         if models.ToDoListModel.objects.filter(title=post_title, status=True, username=user.username):
-            return HttpResponse("Dieses ToDo ist schon erledigt!")
+            messages.warning(request, "Dieses ToDo ist schon erledigt!")
+            return complete(request)
         else:
             new_complete.status = True
             new_complete.description = "Erledigt"
             new_complete.save()
+            messages.success(request, "ToDo Erledigt")
             return todolist(request)
     else:
-        return HttpResponse("Diesen Titel gibt es nicht!")
+        messages.info(request, "Diesen Titel gibt es nicht!")
+        return complete(request)
